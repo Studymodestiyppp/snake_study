@@ -1,0 +1,66 @@
+import socket
+import cv2
+import numpy as np
+import threading
+import keyboard
+import time
+
+
+# 创建TCP套接字
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# 连接服务器
+server_address = ('192.168.57.151', 8888)
+client_socket.connect(server_address)
+
+
+def send_key_press():
+    last_press_time = 0
+    interval = 1  # 发送消息的时间间隔，单位：秒
+    while True:
+        event = keyboard.read_event()
+        if event.event_type == 'down':  # 只处理按键按下事件
+            current_time = time.time()
+            if current_time - last_press_time >= interval:
+                try:
+                    key = event.name
+                    client_socket.sendall(key.encode('utf-8'))
+                    last_press_time = current_time
+                    print(f'发送按键：{key}')
+                except Exception as e:
+                    print(f'发送消息出错：{e}')
+                    break
+
+
+# 启动发送按键消息线程
+send_thread = threading.Thread(target=send_key_press)
+send_thread.start()
+
+while True:
+    # 接收图像数据长度
+    img_len_bytes = client_socket.recv(4)
+    img_len = int.from_bytes(img_len_bytes, byteorder='big')
+
+    # 接收图像数据
+    img_bytes = b''
+    while len(img_bytes) < img_len:
+        remaining_bytes = img_len - len(img_bytes)
+        img_bytes += client_socket.recv(remaining_bytes)
+
+    # 将接收到的字节流转换为图像数据
+    img_array = np.frombuffer(img_bytes, dtype=np.uint8)
+    frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+
+    # 显示图像
+    cv2.imshow('Received Image', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# 等待发送按键消息线程结束
+send_thread.join()
+
+# 关闭客户端套接字
+client_socket.close()
+
+cv2.destroyAllWindows()
