@@ -1,0 +1,58 @@
+% 定义模拟的时间步数
+num_time_steps = 100;
+
+% 用于存储每个舵机在每个时间步的位置
+servo_positions = zeros(6, num_time_steps);
+
+% 模拟时间步的循环
+for t = 1:num_time_steps
+    for i = 0:2:10
+        if i == 0
+            s = 240 * sin(pi * 25 + pi * 10 / 4) + 500;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.005);
+        elseif i == 2
+            s = 240 * sin(pi * t / 25 + pi * 8 / 4) + 400;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.004);
+        elseif i == 4
+            s = 240 * sin(pi * t / 25 + pi * 6 / 4) + 400;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.004);
+        elseif i == 6
+            s = 240 * sin(pi * t / 25 + pi * 4 / 4) + 400;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.004);
+        elseif i == 8
+            s = 210 * sin(pi * t / 25 + pi * 2 / 4) + 400;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.004);
+        elseif i == 10
+            s = 200 * sin(pi * t / 25 + pi * 8 / 4) + 400;
+            servo_positions((i/2) + 1, t) = 800 - s;
+            disp([i, round(s), t]);
+            pause(0.004);
+        end
+    end
+end
+
+% 绘制6个舵机位置随时间的变化曲线在同一个图上
+figure;
+hold on;
+for i = 1:6
+    plot(1:num_time_steps, servo_positions(i, :), 'LineWidth', 1.5);
+end
+hold off;
+
+% 添加图例
+legend('舵机0', '舵机2', '舵机4', '舵机6', '舵机8', '舵机10');
+
+% 添加标题和坐标轴标签
+title('6个舵机位置随时间的变化');
+xlabel('时间步');
+ylabel('舵机位置');
