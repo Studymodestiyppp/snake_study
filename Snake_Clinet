@@ -5,15 +5,24 @@ import threading
 import keyboard
 import time
 
-
+##################################################
+#TCP客户端
+##################################################
 # 创建TCP套接字
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # 连接服务器
-server_address = ('192.168.57.151', 8888)
-client_socket.connect(server_address)
-
-
+server_address = ('192.168.60.207', 8887)
+try:
+    client_socket.connect(server_address)
+    print(f"Connected to server at {server_address}")
+except Exception as e:
+    print(f"Failed to connect to server: {e}")
+    client_socket.close()
+    exit()
+##################################################
+#监听电脑键盘指令，并发送(函数可以AI或者再网上找)
+##################################################
 def send_key_press():
     last_press_time = 0
     interval = 1  # 发送消息的时间间隔，单位：秒
@@ -26,36 +35,14 @@ def send_key_press():
                     key = event.name
                     client_socket.sendall(key.encode('utf-8'))
                     last_press_time = current_time
-                    print(f'发送按键：{key}')
+                    print(f'Sent key: {key}')
                 except Exception as e:
-                    print(f'发送消息出错：{e}')
+                    print(f'Failed to send message: {e}')
                     break
 
-
 # 启动发送按键消息线程
-send_thread = threading.Thread(target=send_key_press)
+send_thread = threading.Thread(target=send_key_press)###给主程序让位,虽然还没主程序[dog]
 send_thread.start()
-
-while True:
-    # 接收图像数据长度
-    img_len_bytes = client_socket.recv(4)
-    img_len = int.from_bytes(img_len_bytes, byteorder='big')
-
-    # 接收图像数据
-    img_bytes = b''
-    while len(img_bytes) < img_len:
-        remaining_bytes = img_len - len(img_bytes)
-        img_bytes += client_socket.recv(remaining_bytes)
-
-    # 将接收到的字节流转换为图像数据
-    img_array = np.frombuffer(img_bytes, dtype=np.uint8)
-    frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-
-    # 显示图像
-    cv2.imshow('Received Image', frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
 # 等待发送按键消息线程结束
 send_thread.join()
