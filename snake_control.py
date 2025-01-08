@@ -10,21 +10,19 @@ key = 0
 
 class Process(object):
     def __init__(self):
-        self.servo = ServoDriver()   ### 创建类的对象
-        self.enable(1)
+##############################################################
+#初始化参数与步态参数（这里只有蠕动）       
+##############################################################
+        self.servo = ServoDriver()   ### 创建舵机类的对象，才能调用舵机控制代码
+        self.enable(1)    ###
         self.servo_list = []   ## 舵机id列表
         self.t = 0    # 全局变量
-        self.k = 0      # 转弯程度系数    左加右减      6：左转90°   10:左转掉头    -6：右转90°   -11:右转掉头  
-        self.d = 4    # 蜿蜒直行速度挡位    3：慢档     4：中档    5：快档
-        self.y = 0
-        self.N = 400   ## 直径85cm左右
-        self.M = 0
+##############################################################
 
-        # 启动服务器线程
-        # server_thread = threading.Thread(target=self.start_server)
-        # server_thread.start()
-
-    def list_servo(self):       ### 检测舵机是否启动，返回舵机id列表
+##############################################################
+#舵机函数
+##############################################################
+    def list_servo(self): 
         for i in range(SNAKE_LENGTH):
             n = self.servo.id_read(i)       
             if n is not None:
@@ -38,7 +36,11 @@ class Process(object):
     def disable(self, value=0):  #
         for i in range(SNAKE_LENGTH):  # 遍历12个舵机
             self.servo.load_or_unload_write(i, value)  # 0 掉电，1装电，恒为0
+##############################################################
 
+##############################################################
+#通讯函数
+##############################################################
     def start_server(self, host='192.168.60.207', port=8887):
         global key
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -57,6 +59,9 @@ class Process(object):
                         key=command
                         print(f"K{key}")
                         print(f"Received command: {command}")
+##############################################################
+#步态函数fuwei(self)、rudong(self)、zuozhuan(self)、youzhuan(self)
+##############################################################
     def fuwei(self):       ##复位
         for i in range(0, 12, 1):
             print(i)
@@ -67,6 +72,7 @@ class Process(object):
                 self.servo.move_time_write(i, 370, 1000)    
         time.sleep(2)
         print("复位")  
+        
     def rudong(self):
         global key
 
@@ -101,6 +107,7 @@ class Process(object):
 
 
             self.t=self.t+1   
+            
     def zuozhuan(self):
         global key
         if key=='A'or key=='a':
@@ -148,7 +155,8 @@ class Process(object):
                     time.sleep(0.004)
 
 
-            self.t=self.t+1                     
+            self.t=self.t+1     
+            
     def youzhuan(self):
         global key
         if key=='D'or key=='d':
