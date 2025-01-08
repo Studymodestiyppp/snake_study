@@ -14,9 +14,10 @@ s=150 *(math.sin( math.pi*self.t/25 + math.pi *i /4))+ 400+50
 math.pi*self.t/25 中math.pi/25 控制震动频率  
 2.通讯  
   基于TCP通讯  
-自己去看python教程  
-
+自己去看python教程    
+ Snake_Control和Snake_Clinet是配套的Snake_Control是服务器端，Snake_Clinet是客户端
 
 3.多线程  
   多任务同时进行的意义  
-  看Snake_Control和Snake_Clinet代码注释
+  看Snake_Control和Snake_Clinet代码注释  
+ 
