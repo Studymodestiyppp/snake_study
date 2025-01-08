@@ -1,5 +1,6 @@
-# snake_study
-1.运动学
+# snake_study  
+ps:以下只是包含对蛇进行无线通讯的较简单代码，不包含传感器读取等  
+1.运动学  
 matlab_simulation运行结果
 
 ![image](https://github.com/user-attachments/assets/b98af6c9-def2-444d-8267-3ecdb19cba53)
