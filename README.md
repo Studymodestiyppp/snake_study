@@ -1,5 +1,5 @@
 # snake_study  
-ps:以下只是包含对蛇进行无线通讯的较简单代码，不包含传感器读取，UI界面等
+ps:以下只是包含对蛇进行无线通讯的较简单代码，不包含传感器读取，UI界面等  
 需具备知识1.python2语法基础.TCP原理及python编程3.多线程及python相应编程  
 1.运动学  
 matlab_simulation运行结果
