@@ -5,8 +5,8 @@ import numpy as np
 import threading
 import socket
 
-SNAKE_LENGTH = 12
-key = 0
+SNAKE_LENGTH = 12###蛇身长度
+key = 0###接收客户端键盘信息
 
 class Process(object):
     def __init__(self):
@@ -14,9 +14,9 @@ class Process(object):
 #初始化参数与步态参数（这里只有蠕动）       
 ##############################################################
         self.servo = ServoDriver()   ### 创建舵机类的对象，才能调用舵机控制代码
-        self.enable(1)    ###
+        self.enable(1)    ###使能舵机
         self.servo_list = []   ## 舵机id列表
-        self.t = 0    # 全局变量
+        self.t = 0    # 全局变量，步态时间函数
 ##############################################################
 
 ##############################################################
@@ -206,10 +206,12 @@ class Process(object):
 
             self.t=self.t+1
         # 可以在这里添加更多的控制逻辑
-
+##############################################################
+#主函数
+##############################################################
     def main(self):
         global key
-        server_thread = threading.Thread(target=self.start_server)
+        server_thread = threading.Thread(target=self.start_server)#因为下面有个while循环一直在检测执行什么步态所以接收信息只能另开线程
         server_thread.start()
         while True:
         # 主程序逻辑
@@ -221,7 +223,9 @@ class Process(object):
                 self.rudong()                   
             if key=='B'or key=='b':
                 self.fuwei()
-
+##############################################################
+#调用类中主函数执行
+##############################################################
 if __name__ == "__main__":
     demo=Process()
     demo.main()
